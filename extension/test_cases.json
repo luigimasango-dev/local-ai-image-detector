@@ -1,0 +1,38 @@
+[
+ {
+  "name": "ai_landscape_glm_image_landscape_10.png",
+  "file": "test_images/glm_image_landscape_10.png",
+  "label": 1,
+  "python_p": 0.6286747941979747
+ },
+ {
+  "name": "ai_art_leonardo_phoenix_art_04.png",
+  "file": "test_images/leonardo_phoenix_art_04.png",
+  "label": 1,
+  "python_p": 0.9508376403073704
+ },
+ {
+  "name": "ai_portrait_flux_2_flex_portrait_09.png",
+  "file": "test_images/flux_2_flex_portrait_09.png",
+  "label": 1,
+  "python_p": 0.9997938837013068
+ },
+ {
+  "name": "real_animal_animal_111_22_r4pgeL28.jpg",
+  "file": "test_images/animal_111_22_r4pgeL28.jpg",
+  "label": 0,
+  "python_p": 0.1119801925315601
+ },
+ {
+  "name": "real_animal_animal_149_E12vXZq9AZA.jpg",
+  "file": "test_images/animal_149_E12vXZq9AZA.jpg",
+  "label": 0,
+  "python_p": 0.2642455447054794
+ },
+ {
+  "name": "real_product_product_119_0QP-0DUaCo4.jpg",
+  "file": "test_images/product_119_0QP-0DUaCo4.jpg",
+  "label": 0,
+  "python_p": 0.3566345979491458
+ }
+]

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AI-Image Detector — inference host</title>
+</head>
+<body>
+  <!--
+    This document is the inference host. It exists only because MV3 service
+    workers have no DOM (breaking the WebGL path and canvas-based capability
+    probing) and are killed after ~30s idle. An offscreen document persists
+    while the extension is active, has full WebGPU/WebGL access, and is shared
+    across all tabs so model weights load exactly once.
+
+    It is deliberately not user-visible: the browser keeps it offscreen.
+  -->
+  <div id="status">initializing</div>
+  <!--
+    Load order matters:
+      1. lib/ort.min.js  — classic script, defines the global `ort`. Vendored
+         locally because the extension CSP forbids a CDN, and because the
+         bounty requires the extension to keep working with the network cut.
+      2. capabilities.js — classic script, defines detectMLCapabilities().
+      3. offscreen.js — an ES module (it imports from inference.js), so it is
+         deferred by default and runs after both classic scripts above.
+  -->
+  <script src="lib/ort.webgpu.min.js"></script>
+  <script src="capabilities.js"></script>
+  <script type="module" src="offscreen.js"></script>
+</body>
+</html>

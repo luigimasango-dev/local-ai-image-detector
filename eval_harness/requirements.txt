@@ -1,0 +1,9 @@
+# Eval harness dependencies
+# Note: torch CPU-wheel selection is platform/GPU dependent; adjust as needed.
+datasets>=3.0.0
+transformers>=4.44.0
+torch>=2.3.0
+pillow>=10.0.0
+numpy>=1.26.0
+scikit-learn>=1.4.0
+requests>=2.31.0

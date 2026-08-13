@@ -1,0 +1,27 @@
+{
+  "manifest_version": 3,
+  "name": "Local AI-Image Detector",
+  "version": "0.1.0",
+  "description": "Detects AI-generated images using only in-browser inference. Fully offline after a one-time model download.",
+  "permissions": ["offscreen", "storage"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "AI-Image Detector",
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+  }
+}

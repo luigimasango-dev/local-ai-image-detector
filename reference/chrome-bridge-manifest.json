@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Chrome Bridge for OpenCode & Claude Code",
+  "version": "1.0.0",
+  "description": "Local bridge: lets OpenCode/Claude Code drive this logged-in Chrome via a local WebSocket. Read-only by default.",
+  "permissions": ["tabs", "activeTab", "scripting", "storage", "alarms"],
+  "host_permissions": ["<all_urls>"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Chrome Bridge",
+    "default_popup": "popup.html"
+  },
+  "icons": {
+    "128": "icon128.png"
+  }
+}

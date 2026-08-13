@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AI-Image Detector</title>
+  <style>
+    body {
+      width: 300px;
+      font-family: system-ui, sans-serif;
+      font-size: 13px;
+      margin: 0;
+      padding: 12px;
+      background: #1e1e1e;
+      color: #e8e8e8;
+    }
+    h1 { font-size: 15px; margin: 0 0 10px; }
+    .row { display: flex; justify-content: space-between; margin: 6px 0; }
+    .row label { color: #9a9a9a; }
+    .row .val { text-align: right; }
+    .switch { transform: scale(1.1); }
+    #status { margin-top: 10px; padding-top: 8px; border-top: 1px solid #333; color: #9a9a9a; }
+  </style>
+</head>
+<body>
+  <h1>AI-Image Detector</h1>
+
+  <div class="row">
+    <label for="enabled">Enable detection</label>
+    <input id="enabled" type="checkbox" class="switch" />
+  </div>
+
+  <div class="row"><label>Execution provider</label><div class="val" id="provider">—</div></div>
+  <div class="row"><label>Model status</label><div class="val" id="model-status">idle</div></div>
+  <div class="row"><label>Load progress</label><div class="val" id="progress">—</div></div>
+  <div id="status">popup</div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
