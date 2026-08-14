@@ -67,8 +67,10 @@ CHECKPOINTS = [
 COMMFOR_REPO = "https://github.com/JeongsooP/Community-Forensics.git"
 CLONE_DIR = ROOT / "_commfor_src"
 
-PY_DEPS = ["torch", "timm", "onnx", "onnxruntime", "onnxscript",
-           "onnxconverter-common", "huggingface_hub", "safetensors", "pillow", "numpy"]
+# Exact versions are pinned in requirements-build.txt — see the note there on
+# why. This list is only used to produce a helpful error message when something
+# is missing.
+PY_DEPS_HINT = "pip install -r requirements-build.txt"
 
 
 def step(msg: str) -> None:
@@ -88,10 +90,10 @@ def check_deps() -> bool:
             missing.append(pip_name)
     if missing:
         print("Missing Python packages:", " ".join(missing))
-        print("\nInstall them with:")
-        print(f"  pip install {' '.join(missing)}")
-        print("\n(For a CPU-only torch, which is all this needs:")
-        print("  pip install torch --index-url https://download.pytorch.org/whl/cpu )")
+        print("\nInstall the exact tested versions with:")
+        print(f"  {PY_DEPS_HINT}")
+        print("\n(torch is CPU-only; no GPU is needed to build or to run this:")
+        print("  pip install torch==2.13.0 --index-url https://download.pytorch.org/whl/cpu )")
         return False
     return True
 

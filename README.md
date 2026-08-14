@@ -16,9 +16,11 @@ Built for [poidh.xyz bounty #323](https://poidh.xyz/arbitrum/bounty/323).
 ## Why local inference
 
 Most "AI-powered" browser tools upload your images to a server. This one runs
-the models in the browser via ONNX Runtime Web (WebGPU, falling back to WebGL
-then WASM), so every image you browse stays on your device. After a one-time
-model download at install, the extension makes **no network requests at all**.
+the models in the browser via ONNX Runtime Web (WebGPU, falling back to WASM),
+so every image you browse stays on your device. After the models are built into
+the extension, it makes **no requests to any external host**. Cross-origin
+images are read from Chrome's own HTTP cache — the page has already downloaded
+them — so the extension works with the network disabled.
 
 ## Current results
 
@@ -27,14 +29,21 @@ generators) built from [AI Detector Arena Benchmark
 v0.1](https://aidetectarena.com/datasets/v0.1). Full detail and caveats in
 [`RESULTS.md`](RESULTS.md).
 
-| Condition | Balanced accuracy @0.65 | AUC | Verdict |
+| Condition | Balanced accuracy @0.65 | AUC | vs 0.75 bar |
 |---|---|---|---|
-| Pristine images | **0.8338** (CI 0.8055–0.8636) | ~0.90 | clears 0.75 bar |
-| 512px + JPEG 75 | **0.7290** (CI 0.6942–0.7639) | 0.7778 | **below bar** |
+| Pristine images | **0.8321** (CI 0.8055–0.8636) | ~0.90 | clears |
+| JPEG 85 (typical web re-encode) | **0.7474** (CI 0.7158–0.7806) | 0.8284 | marginal |
+| 512px + JPEG 75 (aggressive) | **0.7290** (CI 0.6942–0.7639) | 0.7778 | below |
 
-The bounty's benchmark includes "web-realistic samples", so the degraded number
-is likely the one that matters. Fixing that is the current priority — see
-[`RESULTS.md`](RESULTS.md) for why recalibration cannot solve it.
+False positives on real images, at the same threshold: **1%** on frames from
+consumer phone video (n=363), **5%** on programmatically drawn charts, logos,
+UI and text (n=100), **8%** on Unsplash professional photography (n=300).
+Polished studio imagery is the hardest real-image case, not amateur photography.
+
+**The known weakness is compression.** These numbers are reported rather than
+hidden: heavy re-encoding costs roughly 0.10 balanced accuracy, and
+[`RESULTS.md`](RESULTS.md) documents why calibration cannot recover it and
+which mitigations were tried and rejected.
 
 **Ensemble:** two [Community-Forensics](https://github.com/JeongsooP/Community-Forensics)
 models (MIT, 21.7M params each), fused with equal weights and Platt-calibrated
@@ -81,7 +90,7 @@ extension performs one thing, domain-neutral: run two frozen models, average
 their scores, apply the two fitted scalars, and compare the result to 0.65.
 
 ```
-extension/          MV3 Chrome extension (inference currently STUBBED)
+extension/          MV3 Chrome extension (real in-browser inference)
 eval_harness/       Benchmark, inference, scoring, calibration, robustness tools
 tests/              Regression tests for the correctness-critical paths
 models/             Exported ONNX artifacts (gitignored)

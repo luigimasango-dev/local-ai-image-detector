@@ -1,0 +1,23 @@
+# Exact versions the build was tested with.
+#
+# Pinned deliberately. `build.py` downloads model checkpoints and exports them
+# to ONNX; a breaking release in any of these between now and whenever someone
+# else runs the build would fail on THEIR machine and not ours, with no way for
+# us to see it coming. The bounty requires the submission to be reproducible
+# from source, so the build must not depend on whatever happens to be latest.
+#
+#   pip install -r requirements-build.txt
+#
+# torch is CPU-only here — no GPU is needed to build or to run the extension:
+#   pip install torch==2.13.0 --index-url https://download.pytorch.org/whl/cpu
+
+torch==2.13.0
+timm==1.0.28
+onnx==1.22.0
+onnxruntime==1.28.0
+onnxscript==0.7.1
+onnxconverter-common==1.16.0
+huggingface-hub==1.24.0
+safetensors==0.8.0
+pillow==12.3.0
+numpy==2.4.6
