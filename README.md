@@ -40,6 +40,16 @@ consumer phone video (n=363), **5%** on programmatically drawn charts, logos,
 UI and text (n=100), **8%** on Unsplash professional photography (n=300).
 Polished studio imagery is the hardest real-image case, not amateur photography.
 
+> **Read the pristine number with a 4-point discount.** Our TUNE/HOLDOUT split
+> is disjoint by image ID but *not* by subject: the benchmark renders the same
+> prompt scene through many generators, and stratifying by generator puts 59 of
+> 60 scenes on both sides. On a scene-disjoint split the same ensemble measures
+> **0.8242** rather than 0.8686 — so the transfer-relevant clean figure is
+> nearer **0.79–0.83**. This is disclosed rather than corrected in place because
+> every model comparison here used the same split, so the *ranking* between
+> options is unaffected; only the absolute claim needs the discount. Detail in
+> [`RESULTS.md`](RESULTS.md).
+
 **The known weakness is compression.** These numbers are reported rather than
 hidden: heavy re-encoding costs roughly 0.10 balanced accuracy, and
 [`RESULTS.md`](RESULTS.md) documents why calibration cannot recover it and

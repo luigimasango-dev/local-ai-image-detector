@@ -302,11 +302,56 @@ Note the failure is entirely on the AI side again: specificity is unchanged at
 photos look artificial; it is scrubbing the generator fingerprints out of AI
 images.
 
-**Verdict: do NOT submit on this ensemble.** Not because it is far off — it is
-close — but because the most probable real-world condition lands within noise of
-the pass/fail line, and a bounty submission is pass/fail with no partial credit.
-Solving robustness (#17) is worth more than any further calibration or fusion
-tuning, both of which are now exhausted.
+**Verdict at the time this was written: do not submit on this ensemble.** Not
+because it is far off — it is close — but because the most probable real-world
+condition lands within noise of the pass/fail line, and a bounty submission is
+pass/fail with no partial credit.
+
+> **SUPERSEDED — see [`NEXT_STEPS.md`](NEXT_STEPS.md) for the current
+> position.** This verdict predates two findings: false-positive behaviour on
+> real photography turned out to be excellent (1% on 363 consumer phone-video
+> frames — better than on studio photography), and the competitive field went
+> from 1 claim to 16 overnight. The recommendation is now to submit as a
+> low-cost option while not investing further, for reasons that are strategic
+> rather than technical. The paragraph above is left unedited because it
+> records what was believed at the time, and on what evidence.
+
+---
+
+## ⚠️ Our own headline number is optimistic by roughly 4 points
+
+Found by adversarial review of this project, and it applies to the numbers we
+report, not just to the rejected experiment below.
+
+`split_eval_set.py` stratifies the TUNE/HOLDOUT split by `(label, generator)`.
+That was deliberate — it keeps the generator mix identical on both sides. But
+the benchmark renders **the same prompt scene through many different
+generators**, so stratifying by generator *guarantees* that a scene appearing
+under `flux_2_flex` in TUNE also appears under `qwen_2512` in HOLDOUT.
+
+Measured: **59 of 60 scenes appear on both sides of the split.** The holdout is
+disjoint by image ID, but not by semantic content.
+
+Re-running with a **scene-disjoint** split, so no subject appears on both
+sides:
+
+| Split | Balanced accuracy | AUC |
+|---|---|---|
+| By image ID (what we report) | 0.8686 | 0.9449 |
+| **Scene-disjoint (honest)** | **0.8242** | **0.9109** |
+
+**About 0.044 balanced accuracy of our headline is scene leakage.** The
+transfer-relevant figure for an unseen benchmark is therefore closer to
+**0.79–0.83 clean**, not 0.8321.
+
+This does not change any *decision* taken here — every model comparison used
+the same split, so the ranking between options is unaffected — but it does
+change what we should claim. Quote the range, not the flattering end.
+
+**Why it is recorded rather than quietly fixed:** re-splitting and re-running
+every experiment would change all the numbers in this document at once, and
+this correction is more useful stated plainly than buried in a rerun. The fix
+for any future work is to stratify by scene, not by generator.
 
 ---
 
