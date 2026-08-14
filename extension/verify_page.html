@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Extension verification page</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 1000px; margin: 1.5rem auto;
+           padding: 0 1rem; background: #14161a; color: #e6e8eb; line-height: 1.5; }
+    h2 { margin-top: 2.2rem; font-size: 1.05rem; border-bottom: 1px solid #2c313a;
+         padding-bottom: .35rem; }
+    .want { color: #9aa4b2; font-size: .88rem; margin: .3rem 0 .8rem; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .row img { width: 220px; height: 165px; object-fit: cover; border-radius: 6px; }
+    .hero { width: 100%; height: 220px; border-radius: 6px;
+            background-size: cover; background-position: center; }
+    .tiny { width: 64px; height: 64px; }
+    iframe { width: 100%; height: 260px; border: 1px solid #2c313a; border-radius: 6px; }
+    .spacer { height: 900px; display: flex; align-items: center; justify-content: center;
+              color: #5a6472; border: 1px dashed #2c313a; border-radius: 6px; margin: 1rem 0; }
+    code { background: #1e2228; padding: .1rem .35rem; border-radius: 4px; }
+    .note { background: #1e2228; border: 1px solid #2c313a; border-radius: 6px;
+            padding: .8rem 1rem; }
+  </style>
+</head>
+<body>
+  <h1>Extension verification page</h1>
+  <div class="note">
+    <strong>How to use this.</strong> Install the extension (see
+    <code>INSTALL.md</code>), then open this page. Each section below tests one
+    thing that was broken and fixed. Read the “should see” line, then look at
+    the images. Scroll all the way down — the last section only works if you do.
+    <br><br>
+    Then repeat the whole thing with DevTools → Network → <strong>Offline</strong>
+    ticked, and hard-reload. That is the exact condition the bounty graders use.
+    Badges should still appear.
+  </div>
+
+  <h2>1. Cross-origin images (the one that mattered most)</h2>
+  <p class="want">
+    Should see: a percentage badge on each. These come from a different domain
+    than this page, which is true of nearly every image on the real web. If
+    these show a grey “—” instead, the HTTP-cache fallback is not working.
+  </p>
+  <div class="row">
+    <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=600" alt="">
+    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=600" alt="">
+    <img src="https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=600" alt="">
+  </div>
+
+  <h2>2. Two images in one container</h2>
+  <p class="want">
+    Should see: <strong>two separate badges</strong>, one per image, with
+    possibly different numbers. Previously siblings shared a single badge and
+    the second score overwrote the first.
+  </p>
+  <div class="row" id="siblings">
+    <img src="https://images.unsplash.com/photo-1546182990-dffeafbe841d?w=600" alt="">
+    <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=600" alt="">
+  </div>
+
+  <h2>3. CSS background image</h2>
+  <p class="want">
+    Should see: a badge on the banner below. It is not an <code>&lt;img&gt;</code>
+    element at all — it is a CSS background, which the extension used to ignore
+    entirely. Hero banners on real sites are usually built this way.
+  </p>
+  <div class="hero" style="background-image:url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=1200')"></div>
+
+  <h2>4. Tiny images</h2>
+  <p class="want">
+    Should see: <strong>no badges</strong>. Anything under 128×128 is skipped
+    deliberately — icons, spacers and tracking pixels are not worth scoring.
+  </p>
+  <div class="row">
+    <img class="tiny" src="https://images.unsplash.com/photo-1441057206919-63d19fac2369?w=64" alt="">
+    <img class="tiny" src="https://images.unsplash.com/photo-1425082661705-1834bfd09dca?w=64" alt="">
+  </div>
+
+  <h2>5. Images inside an iframe</h2>
+  <p class="want">
+    Should see: badges inside the framed area. Embedded tweets, ads and
+    galleries are iframes; the extension only reaches them because
+    <code>all_frames</code> is set.
+  </p>
+  <iframe src="verify_frame.html" title="framed content"></iframe>
+
+  <h2>6. Same image twice</h2>
+  <p class="want">
+    Should see: <strong>both</strong> badged. Deduplication is per element, not
+    per URL — keying on the URL meant a repeated image only ever got one badge.
+  </p>
+  <div class="row">
+    <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=600" alt="">
+    <img src="https://images.unsplash.com/photo-1518791841217-8f162f1e1131?w=600" alt="">
+  </div>
+
+  <div class="spacer">↓ keep scrolling — lazy-load test is below ↓</div>
+
+  <h2>7. Lazy-loaded image (scroll to reach it)</h2>
+  <p class="want">
+    Should see: a badge, and the image should be the <em>photograph</em>, not a
+    grey placeholder. This image starts as a placeholder and swaps in the real
+    one after two seconds, which is how most news sites work. The extension
+    used to score the placeholder and never look again.
+  </p>
+  <div class="row">
+    <img id="lazy"
+         src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='450'><rect width='100%' height='100%' fill='%23333'/></svg>"
+         alt="">
+  </div>
+
+  <h2>8. Dynamically added image</h2>
+  <p class="want">
+    Should see: a badge appear on an image that is inserted three seconds after
+    page load — the infinite-scroll case.
+  </p>
+  <div class="row" id="dynamic"></div>
+
+  <script>
+    // Lazy-load swap: replace the placeholder src with a real photo, the way a
+    // lazy-loading library does. Tests the attribute-mutation path.
+    setTimeout(() => {
+      document.getElementById("lazy").src =
+        "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=600";
+    }, 2000);
+
+    // Late DOM insertion: tests the childList-mutation path.
+    setTimeout(() => {
+      const img = document.createElement("img");
+      img.src = "https://images.unsplash.com/photo-1439066615861-d1af74d74000?w=600";
+      document.getElementById("dynamic").appendChild(img);
+    }, 3000);
+  </script>
+</body>
+</html>

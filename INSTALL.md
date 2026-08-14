@@ -47,7 +47,40 @@ On the extension's card, look for an **Errors** button.
 - **Red "Errors" button** → click it, copy the text, and send it to me. That
   tells me exactly what to fix.
 
-## Step 5 — Try it on a real page
+## Step 5 — Run the verification page (2 minutes)
+
+The repo includes one page that exercises every case the extension had to get
+right. Open this file in Chrome after installing:
+
+```
+C:\Dev\local-ai-image-detector\extensionerify_page.html
+```
+
+It has eight numbered sections. Each says what you *should* see. Work down the
+list — most take a glance:
+
+| # | What it tests | Pass looks like |
+|---|---|---|
+| 1 | Cross-origin images (the big one) | percentage badges, not grey "—" |
+| 2 | Two images in one container | **two** badges, not one |
+| 3 | CSS background banner | a badge on the wide banner |
+| 4 | Tiny images | **no** badges (correctly skipped) |
+| 5 | Images in an iframe | badges inside the framed box |
+| 6 | Same image twice | both badged |
+| 7 | Lazy-loaded image (scroll down) | badge, and a photo not a grey box |
+| 8 | Image added after 3 seconds | badge appears on it |
+
+Then do it again the way the graders will:
+
+1. Open DevTools (F12) → **Network** tab → tick **Offline**
+2. Hard-reload the page (Ctrl+Shift+R)
+3. Badges should still appear — the extension reads images from Chrome's cache
+   and never needs the network
+
+If anything in that table does not match, tell me which number and what you saw
+instead. That maps straight to a specific piece of code.
+
+## Step 6 — Try it on a real page
 
 1. Open any normal website with photos on it — a news site works well.
 2. Wait a few seconds. The first image takes longer because the extension is
@@ -56,7 +89,7 @@ On the extension's card, look for an **Errors** button.
 3. You should see a small label appear on images showing a percentage — how
    confident it is that the image was AI-generated.
 
-## Step 6 — Check the popup
+## Step 7 — Check the popup
 
 Click the extension's icon in the Chrome toolbar (you may need to click the
 puzzle-piece icon to find it). The popup shows:
